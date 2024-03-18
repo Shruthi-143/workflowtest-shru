@@ -1,1 +1,25 @@
+name: Trigger Workflow
 
+on:
+  workflow_dispatch:
+    inputs:
+      workflow_name:
+        description: ''
+        required: true
+
+jobs:
+  trigger_workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Trigger other workflow
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            https://api.github.com/workflowtest-shru/${{ github.repository }}/dispatches \
+            -d '{"event_type": "${{ github.event.inputs.workflow_name }}"}'
