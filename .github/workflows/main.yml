@@ -1,0 +1,14 @@
+- name: Trigger workflow
+  uses: actions/github-script@v5
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    script: |
+      await github.request('POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches', {
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        workflow_id: '<workflow_id>',
+        ref: 'main',
+        inputs: {
+          workflow_name: 'name-of-target-workflow'
+        }
+      })
